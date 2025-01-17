@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -73,7 +74,6 @@ public class MemberController {
     }
 
     // 5. 비밀번호 검증
-//    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @PostMapping("/members/{memberId}/check")
     public ResponseEntity<CommonResponseDto<Void>> verifyPassword(@PathVariable Long memberId,
                                                                   @Valid @RequestBody PasswordVerifyRequestDto passwordVerifyRequestDto,
@@ -90,8 +90,7 @@ public class MemberController {
         return new ResponseEntity<>(new CommonResponseDto<>("비밀번호 검증 완료", null), HttpStatus.OK);
     }
 
-    // 6. 계정 삭제(사용자용)
-    @PreAuthorize("hasRole('USER') or hasRole('OWNER')")
+    // 6. 계정 삭제
     @DeleteMapping("/members/{memberId}")
     public ResponseEntity<CommonResponseDto<Void>> deleteOwnAccount(@PathVariable Long memberId) {
 

@@ -83,13 +83,13 @@ public class GlobalExceptionHandler {
 
     // 잘못된 데이터 요청 예외 처리
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ErrorResponse> handleJsonParseException(HttpMessageNotReadableException ex) {
+    public ResponseEntity<ErrorResponse> handleJsonParseException(HttpMessageNotReadableException customException) {
         return ErrorResponse.toResponseEntity(ErrorCode.INVALID_JSON);
     }
 
     // 존재하지 않는 URL 요청 또는 잘못된 경로 접근 예외 처리
     @ExceptionHandler(NoHandlerFoundException.class)
-    public ResponseEntity<ErrorResponse> handleNotFoundException(NoHandlerFoundException ex) {
+    public ResponseEntity<ErrorResponse> handleNotFoundException(NoHandlerFoundException customException) {
         return ErrorResponse.toResponseEntity(ErrorCode.NOT_FOUND);
     }
 }

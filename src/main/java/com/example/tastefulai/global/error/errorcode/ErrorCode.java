@@ -24,6 +24,8 @@ public enum ErrorCode {
     ADMIN_CANNOT_REMOVE_ADMIN(HttpStatus.BAD_REQUEST, "관리자는 다른 관리자를 삭제할 수 없습니다. "),
     INVALID_REQUEST(HttpStatus.BAD_REQUEST, "유효하지 않은 요청입니다."),
     INVALID_JSON(HttpStatus.BAD_REQUEST, "JSON 데이터 형식이 올바르지 않습니다."),
+    CANNOT_MODIFY_DEACTIVATED_MEMBER(HttpStatus.BAD_REQUEST, "탈퇴한 사용자는 권한을 변경할 수 없습니다."),
+    CANNOT_CHANGE_TO_SAME_ROLE(HttpStatus.BAD_REQUEST, "이미 동일한 권한입니다."),
 
     // 401 UNAUTHORIZED
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "로그인 해주세요."),

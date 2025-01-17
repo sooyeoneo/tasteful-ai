@@ -17,7 +17,7 @@ public class AdminMemberServiceImpl implements AdminMemberService {
 
     private final AdminMemberRepository adminMemberRepository;
 
-    // 회원 탈퇴(관리자용)
+    // 회원 탈퇴(ADMIN 전용)
     @Override
     @Transactional
     public void deleteMemberByAdmin(Long memberId) {
@@ -44,7 +44,7 @@ public class AdminMemberServiceImpl implements AdminMemberService {
         adminMemberRepository.save(targetMember);
     }
 
-    // 권한 변경 - 관리자용
+    // 권한 변경(ADMIN 전용)
     @Override
     @Transactional
     public void updateMemberRole(Long memberId, String memberRole) {
@@ -60,6 +60,16 @@ public class AdminMemberServiceImpl implements AdminMemberService {
         // 변경 대상 회원 확인
         Member targetMember = adminMemberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+        //  탈퇴 회원 여부 확인
+        if (targetMember.getDeletedAt() != null) {
+            throw new CustomException(ErrorCode.CANNOT_MODIFY_DEACTIVATED_MEMBER);
+        }
+
+        // 동일 권한 사용자간 변경 방지
+        if (targetMember.getMemberRole() == MemberRole.ADMIN) {
+            throw new CustomException(ErrorCode.CANNOT_CHANGE_TO_SAME_ROLE);
+        }
 
         targetMember.updateMemberRole(MemberRole.valueOf(memberRole));
 

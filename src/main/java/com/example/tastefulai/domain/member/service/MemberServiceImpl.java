@@ -7,6 +7,7 @@ import com.example.tastefulai.domain.member.enums.GenderRole;
 import com.example.tastefulai.domain.member.enums.MemberRole;
 import com.example.tastefulai.domain.member.repository.MemberRepository;
 import com.example.tastefulai.global.common.dto.JwtAuthResponse;
+import com.example.tastefulai.global.common.service.RedisService;
 import com.example.tastefulai.global.config.auth.MemberDetailsServiceImpl;
 import com.example.tastefulai.global.error.errorcode.ErrorCode;
 import com.example.tastefulai.global.error.exception.CustomException;
@@ -30,10 +31,9 @@ public class MemberServiceImpl implements MemberService {
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
     private final RedisTemplate<String, Object> redisTemplate;
+    private final RedisService redisService;
     private static final String VERIFY_PASSWORD_KEY = "verify-password:";
     private static final String REFRESH_TOKEN_KEY = "refreshToken:";
-    private static final String ACCESS_TOKEN_KEY = "access_token:";
-    private final MemberDetailsServiceImpl memberDetailsServiceImpl;
 
     /**
      * 1. 회원 가입 :
@@ -87,15 +87,9 @@ public class MemberServiceImpl implements MemberService {
 
 
     // 3. 로그아웃
-    @Override
     public void logout(String token) {
         // AccessToken 블랙리스트 등록
-        redisTemplate.opsForValue().set(
-                "blacklist:" + token,
-                "invalid",
-                jwtProvider.getAccessTokenExpiryMillis(),
-                TimeUnit.MILLISECONDS
-        );
+        redisService.addToBlacklist(token, jwtProvider.getAccessTokenExpiryMillis());
         log.info("AccessToken 블랙리스트 등록 완료: {}", token);
     }
 
@@ -169,6 +163,10 @@ public class MemberServiceImpl implements MemberService {
 
         return Member.toProfileDto(member);
     }
+
+
+
+    // **** 공통 메서드 **** //
 
     // 검증 상태 확인
     public boolean isPasswordVerified(Long memberId) {

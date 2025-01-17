@@ -20,7 +20,7 @@ public class AdminMemberController {
 
     private final AdminMemberService adminMemberService;
 
-    // 회원 삭제 - 관리자용
+    // 회원 삭제(ADMIN 전용)
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{memberId}")
     public ResponseEntity<CommonResponseDto<Void>> deleteMemberByAdmin(@PathVariable Long memberId) {
@@ -29,11 +29,11 @@ public class AdminMemberController {
         return new ResponseEntity<>(new CommonResponseDto<>("회원 삭제 완료",null), HttpStatus.OK);
     }
 
-    // 멤버 권한 변경 - 관리자용
+    // 멤버 권한 변경(ADMIN 전용)
     @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{memberId}/roles")
     public ResponseEntity<CommonResponseDto<Void>> updateMemberRolesByAdmin(@PathVariable Long memberId,
-                                                                            @RequestParam("role") String memberRole) {
+                                                                            @RequestParam("memberRole") String memberRole) {
 
         adminMemberService.updateMemberRole(memberId, memberRole);
 
