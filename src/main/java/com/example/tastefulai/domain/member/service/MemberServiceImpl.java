@@ -42,7 +42,7 @@ public class MemberServiceImpl implements MemberService {
     // 1. 회원가입
     @Override
     @Transactional
-    public MemberResponseDto signup( MemberRole memberRole, String email, String password, String nickname,
+    public MemberResponseDto signup(MemberRole memberRole, String email, String password, String nickname,
                                     Integer age, GenderRole genderRole) {
         // 유효성 검사
         MemberRequestDto memberRequestDto = new MemberRequestDto(memberRole, email, password, nickname, age, genderRole);
@@ -76,7 +76,7 @@ public class MemberServiceImpl implements MemberService {
         String accessToken = jwtProvider.generateAccessToken(email);
         String refreshToken = jwtProvider.generateRefreshToken(email);
 
-        // RefreshToken을 Redis에 저장
+        // RefreshToken 을 Redis 에 저장
         storeRefreshToken(email, refreshToken);
 
         return new JwtAuthResponse(accessToken, refreshToken);
@@ -148,23 +148,26 @@ public class MemberServiceImpl implements MemberService {
     // 7. 닉네임 수정
     @Override
     @Transactional
-    public ProfileResponseDto updateNickname(Member member, String nickname) {
+    public void updateNickname(Long memberId, String nickname) {
+
+        Member member = findById(memberId);
 
         member.updateNickname(nickname);
 
         memberRepository.save(member);
-
-        return Member.toProfileDto(member);
     }
 
+
+    // 8. 프로필 조회
+    @Override
+    public ProfileResponseDto getMemberProfile(Long memberId) {
+
+        Member member = findById(memberId);
+
+        return Member.toDto(member);
+    }
 
     // **** 공통 메서드 **** //
-
-    @Override
-    public ProfileResponseDto getMemberProfile(Member member) {
-
-        return Member.toProfileDto(member);
-    }
 
     // 검증 상태 확인
     public boolean isPasswordVerified(Long memberId) {

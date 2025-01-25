@@ -5,9 +5,12 @@ import lombok.Getter;
 @Getter
 public class ProfileRequestDto {
 
-    private final String nickname;
+    private String nickname;
 
     public ProfileRequestDto(String nickname) {
         this.nickname = nickname;
+    }
+
+    public ProfileRequestDto() {
     }
 }

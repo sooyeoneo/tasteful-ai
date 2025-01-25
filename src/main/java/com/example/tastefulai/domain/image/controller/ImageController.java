@@ -26,8 +26,6 @@ public class ImageController {
     private final ImageService imageService;
 
     // 프로필 사진 업로드
-    //이후 @PathVariable 의 memberId를 로그인한 유저의 정보로 받아오게 바꿀 것
-    //ProfileResponseDto 의 tastes 바꿀것
     @PutMapping
     public ResponseEntity<CommonResponseDto<ImageResponseDto>> updateImage(@AuthenticationPrincipal MemberDetailsImpl memberDetailsImpl,
                                                                            @RequestParam(required = false) MultipartFile image) throws IOException {

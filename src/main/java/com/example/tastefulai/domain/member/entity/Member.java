@@ -49,10 +49,10 @@ public class Member extends BaseEntity {
 
     private LocalDateTime deletedAt;
 
-    // 연관 관계
-    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Image image;
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    private List<Image> images;
 
+    // 연관 관계
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Taste> tastes = new ArrayList<>();
 
@@ -87,18 +87,16 @@ public class Member extends BaseEntity {
         this.nickname = nickname;
     }
 
-    public void updateImage(Image image) {
-        this.image = image;
-    }
-
-    public static ProfileResponseDto toProfileDto(Member member) {
-
-        String memberImageUrl = (member.getImage() == null) ? null : member.getImage().getImageUrl();
-
-        return new ProfileResponseDto(member.getNickname(), memberImageUrl, member.getCreatedAt().toLocalDate(), "");
-    }
-
     public void updateMemberRole(MemberRole memberRole) {
         this.memberRole = memberRole;
+    }
+
+    public static ProfileResponseDto toDto (Member member) {
+
+        return new ProfileResponseDto(
+                member.getNickname(),
+                (member.getImages().isEmpty()) ? null : member.getImages().getFirst().getImageUrl(),
+                member.getCreatedAt().toLocalDate(),
+                "");
     }
 }

@@ -25,7 +25,7 @@ public interface MemberService {
 
     void deleteMember(Long memberId);
 
-    ProfileResponseDto updateNickname(Member member, String nickname);
+    void updateNickname(Long memberId, String nickname);
 
-    ProfileResponseDto getMemberProfile(Member member);
+    ProfileResponseDto getMemberProfile(Long memberId);
 }
